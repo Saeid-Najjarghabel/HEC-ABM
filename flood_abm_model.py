@@ -283,7 +283,7 @@ def go(p: float) -> bool:
     return random.random() < p
 
 def sample_from_probs(items, probs):
-    """Return one item from `items` according to `probs`."""
+    
     r = random.random()
     cum = 0.0
     for item, p in zip(items, probs):
@@ -293,11 +293,11 @@ def sample_from_probs(items, probs):
     return items[-1]
 
 def time_reached(now_h, now_m, tgt_h, tgt_m):
-    """Return True if (now) has reached or passed (target) time."""
+    
     return (now_h > tgt_h) or (now_h == tgt_h and now_m >= tgt_m)
 
 def sample_trip_purpose(day_type: str) -> str:
-    """Sample a trip purpose based on weekday/weekend probabilities."""
+    
     if day_type == "weekend":
         items = list(WEEKEND_PURPOSE_PROBS.keys())
         probs = list(WEEKEND_PURPOSE_PROBS.values())
@@ -310,11 +310,7 @@ def sample_departure_time(purpose: str, day_type: str,
                           min_h: float = 0.0,
                           max_h: float = 23.5,
                           sigma: float = 0.6) -> float:
-    """
-    Sample departure time (hours) using TIME_WINDOWS mixture.
-    - min_h/max_h constrain the valid time range (e.g., morning commute only)
-    - sigma controls spread around each centre (hours)
-    """
+
     windows = TIME_WINDOWS[day_type].get(purpose, TIME_WINDOWS[day_type]["Other"])
     centres = [c for (c, w) in windows]
     weights = np.array([w for (c, w) in windows], dtype=float)
@@ -332,11 +328,11 @@ def sample_departure_time(purpose: str, day_type: str,
     return t
 
 def sample_trip_length_bin() -> tuple:
-    """Return a (d_min_km, d_max_km) bin, always within < 5 km."""
+    
     return sample_from_probs(TRIP_LENGTH_BINS, TRIP_LENGTH_PROBS)
 
 def transform_coordinates(x, y):
-    """From BNG (E,N) -> WGS84 (lat, lon)."""
+    
     try:
         lon, lat = to_wgs84.transform(x, y)
         return lat, lon
@@ -345,7 +341,7 @@ def transform_coordinates(x, y):
         return None, None
 
 def wgs84_to_bng(lon, lat):
-    """From WGS84 (lon, lat) -> BNG (E,N)."""
+    
     E, N = to_bng.transform(lon, lat)
     return float(E), float(N)
 
@@ -554,7 +550,7 @@ def generate_daily_trips_for_agent(agent, day_type: str):
         purpose = sample_trip_purpose(day_type)
 
         if purpose in ["Work", "Education"]:
-            continue  # avoid duplicate commute
+            continue  
 
         dep_time_h = sample_departure_time(purpose, day_type, min_h=6.0, max_h=23.0, sigma=0.9)
         dep_step = int(round(dep_time_h / STEP_HOURS))
@@ -576,7 +572,7 @@ def generate_daily_trips_for_agent(agent, day_type: str):
 #----------- Helper for Exposure matrix and RRI---------------------------------
 
 def step_to_clock_str(step_idx: int, start_hour: int, start_min: int, step_minutes: int) -> str:
-    """Convert timestep index to clock label 6-to-6 window."""
+    
     total_min = start_hour * 60 + start_min + step_idx * step_minutes
     total_min = total_min % (24 * 60)
     hh = total_min // 60
@@ -594,7 +590,7 @@ def compute_rri_active_matrix(E_gt: np.ndarray,
                               eps: float = 1e-9) -> np.ndarray:
 
     G, T = E_gt.shape
-    assert A_gt.shape == (G, T), "A_gt must have same shape as E_gt (G,T)."
+    assert A_gt.shape == (G, T), 
 
     E_t = np.sum(E_gt, axis=0)  # (T,)
     A_t = np.sum(A_gt, axis=0)  # (T,)
@@ -624,7 +620,7 @@ def compute_rri_active_matrix(E_gt: np.ndarray,
 
 
 def _label_to_hour(x):
-    """Convert label like '06:00' or '6' or 6 to an integer hour 0..23."""
+    
     if isinstance(x, (int, np.integer)):
         return int(x)
     if isinstance(x, (float, np.floating)):
@@ -1230,14 +1226,7 @@ def RiskPerceptionIndex_HECRAS(agents, hec_reader, t_index,
                               T: float = T_DEPTH,
                               k: float = K_SIG,
                               day_type: str = "weekday"):
-    """
-    NEW RPI:
-      RPI_{i,t} = Clamp( ((alpha*f(D_{i,t}) + beta*C_t) * M_i), 0, 1 )
-    where:
-      f(D) is sigmoid depth perception
-      C_t is official warning (0..1)
-      M_i is demographic amplifier (>=1)
-    """
+
     # --- points for HEC sampling ---
     pts_EN = []
     for ag in agents:
