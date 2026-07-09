@@ -38,4 +38,4 @@ See `requirements.txt` and `environment.yml` for installation.
 
 ## Citation
 
-If you use this software, please cite the related paper and this repository. A citation template is provided in `CITATION.cff`.
+If you use this code, please cite the related paper and this repository. A citation template is provided in `CITATION.cff`.
