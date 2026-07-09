@@ -7,4 +7,4 @@
 - Added agent-based flood exposure and mobility simulation.
 - Added risk priority index and Watts-Strogatz social communication network.
 - Added road closure and dynamic route disruption analysis.
-- Added manuscript-ready software and data availability documentation.
+- Added code and data availability documentation.
