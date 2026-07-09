@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite the related paper and repository."
+message: "If you use this code, please cite the related paper and repository."
 title: "Flood-ABM: Agent-Based Flood Risk and Transport Disruption Model"
 authors:
   - family-names: Najjarghabel
